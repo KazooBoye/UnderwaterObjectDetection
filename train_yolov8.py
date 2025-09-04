@@ -9,35 +9,44 @@ from pathlib import Path
 from ultralytics import YOLO
 import torch
 
+# Import configuration
+try:
+    from config import Config
+except ImportError:
+    print("Config file not found. Creating from template...")
+    import shutil
+    shutil.copy("config_template.py", "config.py")
+    from config import Config
+    print("Created config.py from template. You can customize it if needed.")
+
 def train_yolov8_aquarium():
     """Train YOLOv8 on aquarium dataset with optimized settings"""
     
-    # Paths
-    project_root = Path("/Users/caoducanh/Desktop/Coding/UnderwaterObjectDetection")
-    data_yaml = project_root / "aquarium_pretrain" / "data.yaml"
-    
-    # Create runs directory
-    runs_dir = project_root / "runs"
-    runs_dir.mkdir(exist_ok=True)
+    # Use configuration for paths
+    data_yaml = Config.get_data_yaml_path()
+    runs_dir = Path(Config.get_runs_dir())
     
     # Initialize YOLOv8 model
-    # Using YOLOv8n for faster training, can upgrade to YOLOv8s/m/l/x for better accuracy
-    model = YOLO('yolov8n.pt')  # Load pretrained model
+    model = YOLO(Config.MODEL_SIZE)  # Load pretrained model
     
     print("=== YOLOv8 Training Configuration ===")
+    print(f"Project Root: {Config.get_project_root()}")
     print(f"Dataset: {data_yaml}")
-    print(f"Model: YOLOv8n (nano)")
+    print(f"Model: {Config.MODEL_SIZE}")
     print(f"Device: {'GPU' if torch.cuda.is_available() else 'CPU'}")
     print(f"Output directory: {runs_dir}")
     
     # Training parameters optimized for class imbalance
     training_args = {
         # Basic training settings
-        'data': str(data_yaml),
+        'data': data_yaml,
         'epochs': 300,           # Extended training for minority classes
-        'batch': 16,             # Smaller batch size for stability
+        'batch': Config.BATCH_SIZE,  # Configurable batch size
         'imgsz': 640,           # Standard input size
         'device': 0 if torch.cuda.is_available() else 'cpu',
+        
+        # Linux optimization: Auto-detect optimal worker count
+        'workers': Config.WORKERS,
         
         # Learning rate and optimization
         'lr0': 0.01,            # Initial learning rate
@@ -81,9 +90,9 @@ def train_yolov8_aquarium():
         'save': True,
         'save_period': 50,      # Save every 50 epochs
         'cache': False,         # Don't cache (memory considerations)
-        'workers': 4,           # Data loading workers
+        'workers': Config.WORKERS,  # Configurable worker count
         'project': str(runs_dir),
-        'name': 'aquarium_yolov8_balanced',
+        'name': Config.EXPERIMENT_NAME,
         'exist_ok': False,
         'pretrained': True,
         'verbose': True,
@@ -91,13 +100,13 @@ def train_yolov8_aquarium():
     
     print("\n=== Starting Training ===")
     print("Key optimizations:")
-    print("✓ Extended 300 epochs for minority class learning")
-    print("✓ Multi-scale augmentation (scale=0.5)")
-    print("✓ Mosaic + Mixup for complex scenes and class balance")  
-    print("✓ Copy-paste augmentation for object detection")
-    print("✓ Focal loss components (cls, box, dfl weights)")
-    print("✓ Dropout regularization")
-    print("✓ SGD optimizer for stable training on imbalanced data")
+    print("- Extended 300 epochs for minority class learning")
+    print("- Multi-scale augmentation (scale=0.5)")
+    print("- Mosaic + Mixup for complex scenes and class balance")  
+    print("- Copy-paste augmentation for object detection")
+    print("- Focal loss components (cls, box, dfl weights)")
+    print("- Dropout regularization")
+    print("- SGD optimizer for stable training on imbalanced data")
     
     # Start training
     try:
@@ -158,8 +167,7 @@ if __name__ == "__main__":
     
     if results:
         # Evaluate on test set
-        project_root = Path("/Users/caoducanh/Desktop/Coding/UnderwaterObjectDetection")
-        data_yaml = project_root / "aquarium_pretrain" / "data.yaml"
+        data_yaml = Config.get_data_yaml_path()
         best_model = results.save_dir / "weights" / "best.pt"
         
         if best_model.exists():

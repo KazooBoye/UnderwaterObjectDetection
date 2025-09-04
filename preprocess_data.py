@@ -12,6 +12,16 @@ from pathlib import Path
 import random
 from collections import Counter
 
+# Import configuration
+try:
+    from config import Config
+except ImportError:
+    print("Config file not found. Creating from template...")
+    import shutil
+    shutil.copy("config_template.py", "config.py")
+    from config import Config
+    print("Created config.py from template. You can customize it if needed.")
+
 class MinorityClassAugmenter:
     """Augment minority classes to balance the dataset"""
     
@@ -259,7 +269,8 @@ def create_balanced_subset(data_root, subset_size_per_class=200):
     return balanced_dir
 
 if __name__ == "__main__":
-    data_root = "/Users/caoducanh/Desktop/Coding/UnderwaterObjectDetection/aquarium_pretrain"
+    # Use configuration for data root
+    data_root = Config.DATASET_DIR
     
     print("=== Data Preprocessing for Class Imbalance ===")
     print("\nChoose preprocessing approach:")

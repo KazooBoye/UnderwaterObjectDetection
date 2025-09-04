@@ -1,4 +1,4 @@
-path: /Users/caoducanh/Desktop/Coding/UnderwaterObjectDetection/aquarium_pretrain
+path: /mnt/ssd/derek/UnderwaterObjectDetection/aquarium_pretrain
 train: train/images
 val: valid/images
 test: test/images

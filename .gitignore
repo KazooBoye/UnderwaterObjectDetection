@@ -179,3 +179,16 @@ cython_debug/
 #  refer to https://docs.cursor.com/context/ignore-files
 .cursorignore
 .cursorindexingignore
+
+# Project-specific configuration files (contains personal paths)
+config.py
+
+# Virtual environments (project-specific)
+venv_yolov8/
+activate_env.sh
+activate_venv.sh
+
+# Training outputs and model weights
+
+
+# Dataset-specific (if contains personal paths)
