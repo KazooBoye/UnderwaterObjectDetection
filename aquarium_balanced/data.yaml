@@ -1,0 +1,10 @@
+path: /mnt/ssd/derek/UnderwaterObjectDetection/aquarium_balanced
+train: train/images
+val: valid/images
+test: test/images
+
+nc: 7
+names: ['fish', 'jellyfish', 'penguin', 'puffin', 'shark', 'starfish', 'stingray']
+
+# Class weights based on analysis (inverse frequency)
+# fish: 1.0, jellyfish: 5.1, penguin: 6.3, puffin: 11.2, shark: 3.6, starfish: 25.1, stingray: 14.4
