@@ -189,6 +189,7 @@ activate_env.sh
 activate_venv.sh
 
 # Training outputs and model weights
-
+runs
 
 # Dataset-specific (if contains personal paths)
+aquarium_light_aug
