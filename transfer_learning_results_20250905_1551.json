@@ -1,0 +1,63 @@
+{
+  "model_used": "underwater_adapted_yolov8s",
+  "model_path": "pretrained_models/underwater_adapted_yolov8s.pt",
+  "phases": {
+    "phase1_backbone_frozen": {
+      "config": {
+        "description": "Phase 1: Freeze backbone, train head only",
+        "freeze_layers": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9
+        ],
+        "epochs": 50,
+        "lr": 0.001,
+        "batch_size": 16,
+        "patience": 15,
+        "save_name": "phase1_head_only"
+      },
+      "best_weights": "runs/transfer_learning/underwater_adapted_yolov8s_phase1_head_only_20250905_1508/weights/best.pt",
+      "completed": true
+    },
+    "phase2_partial_unfrozen": {
+      "config": {
+        "description": "Phase 2: Partially unfreeze, fine-tune",
+        "freeze_layers": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5
+        ],
+        "epochs": 100,
+        "lr": 0.0005,
+        "batch_size": 12,
+        "patience": 20,
+        "save_name": "phase2_partial"
+      },
+      "best_weights": "runs/transfer_learning/underwater_adapted_yolov8s_phase2_partial_20250905_1519/weights/best.pt",
+      "completed": true
+    },
+    "phase3_full_unfrozen": {
+      "config": {
+        "description": "Phase 3: Full fine-tuning",
+        "freeze_layers": [],
+        "epochs": 150,
+        "lr": 0.0001,
+        "batch_size": 8,
+        "patience": 25,
+        "save_name": "phase3_full"
+      },
+      "best_weights": "runs/transfer_learning/underwater_adapted_yolov8s_phase3_full_20250905_1542/weights/best.pt",
+      "completed": true
+    }
+  }
+}

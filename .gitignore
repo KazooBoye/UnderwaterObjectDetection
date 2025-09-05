@@ -190,6 +190,14 @@ activate_venv.sh
 
 # Training outputs and model weights
 runs
+models
 
 # Dataset-specific (if contains personal paths)
 aquarium_light_aug
+aquarium_pretrain
+aquarium_advanced
+
+# Pretrain Models
+pretrained_models
+yolo11n.pt
+yolov8m.pt
